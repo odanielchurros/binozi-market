@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Binozi Market 🛒</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛒</text></svg>">
+<meta name="apple-mobile-web-app-title" content="Binozi Market">
+<meta name="theme-color" content="#0B6B52">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#E9EEEC;--card:#fff;--ink:#10261F;--mute:#55685F;--line:#CBD6D1;--tag:#FFD93B;--tagink:#1B1600;--accent:#0B6B52;--onaccent:#fff;--danger:#B3261E;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0C1411;--card:#15201C;--ink:#E8F0EC;--mute:#92A69D;--line:#273630;--accent:#5FD0A8;--onaccent:#06140F;--danger:#FF8A80;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0C1411;--card:#15201C;--ink:#E8F0EC;--mute:#92A69D;--line:#273630;--accent:#5FD0A8;--onaccent:#06140F;--danger:#FF8A80;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 "Archivo",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:520px;margin:0 auto;padding:16px 16px 120px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+h1{font-size:1.5rem;font-weight:800;margin:0;letter-spacing:-.02em}
+h2{font-size:1.7rem;font-weight:800;margin:8px 0 14px;letter-spacing:-.02em;line-height:1.15}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.icon{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 14px;font-weight:600}
+.field{display:block;margin-bottom:12px}
+.field>span{display:block;font-size:.85rem;color:var(--mute);margin-bottom:4px}
+input[type=text]{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--card);font-size:1rem}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px;margin-bottom:14px}
+.seg button{border:0;background:transparent;padding:10px;border-radius:9px;font-weight:600;color:var(--mute)}
+.seg button[aria-pressed=true],.seg button[aria-selected=true]{background:var(--accent);color:var(--onaccent)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}
+.big{width:100%;padding:18px;border:0;border-radius:12px;background:var(--tag);color:var(--tagink);font-weight:800;font-size:1.1rem}
+.link{background:none;border:0;color:var(--accent);font-weight:600;padding:8px 0;text-decoration:underline}
+.prices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:4px 0 12px}
+.pbox{display:block;border:2px solid var(--line);border-radius:12px;padding:10px;cursor:pointer}
+.pbox:has(input[type=radio]:checked){border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.pbox>span{display:flex;align-items:center;gap:6px;font-weight:600;margin-bottom:6px}
+.pbox input[type=text]{padding:8px;font-weight:800;font-size:1.15rem;font-variant-numeric:tabular-nums}
+.pbox.small{grid-column:1/-1}
+.save{width:100%;padding:14px;border:0;border-radius:12px;background:var(--accent);color:var(--onaccent);font-weight:800}
+.status{color:var(--mute);font-size:.92rem;min-height:1.3em;margin:8px 0}
+.thumb{width:100%;max-height:180px;object-fit:cover;border-radius:10px;margin-bottom:10px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:6px}
+.chips button{flex:none;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 14px}
+.chips button[aria-pressed=true]{background:var(--accent);color:var(--onaccent);border-color:var(--accent)}
+.visit{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--accent);color:var(--onaccent);border-radius:14px;padding:12px 14px;margin-bottom:14px}
+.visit b{font-size:1.15rem;display:block}
+.visit span{font-size:.88rem;opacity:.9}
+.visit button{border:2px solid currentColor;background:transparent;border-radius:10px;padding:8px 12px;font-weight:700;flex:none}
+.item{display:grid;grid-template-columns:1fr auto;gap:4px 12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px}
+.vc .item{background:var(--bg)}
+.item b{font-weight:600}
+.meta{color:var(--mute);font-size:.85rem}
+.tag{background:var(--tag);color:var(--tagink);border-radius:6px 12px 12px 6px;padding:6px 12px;font-weight:800;font-size:1.15rem;font-variant-numeric:tabular-nums;text-align:right;align-self:start}
+.tag small{display:block;font-size:.7rem;font-weight:600}
+.best{color:var(--accent);font-weight:600;font-size:.85rem}
+.del{border:0;background:none;color:var(--danger);font-weight:600;padding:4px 0;justify-self:start}
+.empty{text-align:center;color:var(--mute);padding:20px 8px}
+details.vc{padding:0}
+details.vc>summary{list-style:none;cursor:pointer;padding:14px;display:grid;gap:2px}
+details.vc>summary::-webkit-details-marker{display:none}
+details.vc>summary b{font-size:1.1rem}
+details.vc[open]>summary{border-bottom:1px solid var(--line);margin-bottom:10px}
+details.vc>:not(summary){margin-left:12px;margin-right:12px}
+details.vc>.acts{display:flex;justify-content:space-between;margin-bottom:6px}
+#nome{font-size:1.1rem;font-weight:600}
+.cam{position:fixed;inset:0;background:#000;z-index:50}
+.cam video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.frame{position:absolute;left:6%;right:6%;top:50%;transform:translateY(-58%);aspect-ratio:4/3;border:3px solid var(--tag);border-radius:14px;box-shadow:0 0 0 100vmax rgba(0,0,0,.55)}
+.camtxt{position:absolute;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 14px);text-align:center;color:#fff;padding:0 20px;font-weight:600;text-shadow:0 1px 4px #000}
+.camact{position:absolute;left:0;right:0;bottom:0;padding:16px 16px calc(env(safe-area-inset-bottom,0px) + 18px);display:flex;gap:12px}
+.camact button{flex:1;padding:16px;border-radius:12px;border:0;font-weight:800;font-size:1.05rem}
+.frame.ok{border-color:#3DDC84}
+.camst{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 100px);text-align:center;color:#fff;font-weight:800;font-size:1.1rem;text-shadow:0 1px 4px #000;padding:0 16px}
+.camact button{font-size:.98rem!important}
+.step{display:inline-flex;align-items:center;gap:6px}
+.step button{width:42px;height:42px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-size:1.3rem;font-weight:800}
+.step output{min-width:34px;text-align:center;font-weight:800;font-size:1.15rem}
+.crow{display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px}
+.tot{display:flex;justify-content:space-between;font-weight:800;font-size:1.25rem;padding:12px 4px}
+.save2{width:100%;padding:12px;border:2px solid var(--accent);border-radius:12px;background:transparent;color:var(--accent);font-weight:800;margin-top:8px}
+.totbar{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 18px calc(env(safe-area-inset-bottom,0px) + 12px);background:var(--ink);color:var(--bg);box-shadow:0 -4px 16px rgba(0,0,0,.25);font-weight:600}
+.totbar small{display:block;opacity:.8;font-size:.8rem;font-weight:400}
+.totbar b{font-size:1.6rem;font-variant-numeric:tabular-nums;background:var(--tag);color:var(--tagink);border-radius:8px;padding:4px 12px}
+.bump{animation:bump .35s}
+@keyframes bump{40%{transform:scale(1.12)}}
+@media (prefers-reduced-motion:reduce){.bump{animation:none}}
+[hidden]{display:none!important}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
+</head>
+<body>
+<div class="cam" id="camov" hidden><video id="vid" playsinline muted></video><div class="frame" id="frame"></div>
+<div class="camtxt">Aponte para a etiqueta dentro da moldura. A foto é tirada sozinha quando ela for reconhecida.</div>
+<div class="camst" id="camst" role="status"></div>
+<div class="camact"><button id="camx" type="button">Cancelar</button><button id="camauto" type="button">Auto ✓</button><button id="camok" type="button" style="background:var(--tag);color:var(--tagink)">Capturar</button></div></div>
+<main>
+<header><h1>Binozi Market 🛒</h1><button class="icon" id="theme" type="button" aria-label="Alternar modo noturno">🌙 Noturno</button></header>
+
+<div class="seg" role="tablist">
+<button role="tab" id="t1" aria-selected="true" type="button">Compras</button>
+<button role="tab" id="t3" aria-selected="false" type="button">Carrinho</button>
+<button role="tab" id="t2" aria-selected="false" type="button">Histórico</button>
+</div>
+
+<section id="start">
+<h2>Em qual mercado compraremos hoje?</h2>
+<label class="field"><span>Nome do mercado</span>
+<input type="text" id="mkt" list="mk" placeholder="Ex.: Atacadão, Assaí…" autocomplete="off"></label>
+<datalist id="mk"></datalist>
+<div class="chips" id="recentes"></div>
+<button class="big" id="iniciar" type="button">Iniciar compras</button>
+<p class="status" id="sstatus" role="status"></p>
+<p class="meta" style="margin-top:28px">Versão 5</p>
+</section>
+
+<section id="scan" hidden>
+<div class="visit">
+<div><span>Comprando em</span><b id="vtitle"></b><span id="vsum"></span></div>
+<button id="fim" type="button">Finalizar</button>
+</div>
+
+<div class="field"><span>Preço que quero registrar</span></div>
+<div class="seg" id="pref" style="margin-top:-8px">
+<button type="button" data-v="varejo" aria-pressed="true">Varejo</button>
+<button type="button" data-v="atacado" aria-pressed="false">Atacado</button>
+</div>
+
+<input type="file" id="cam" accept="image/*" capture="environment" hidden>
+<input type="file" id="gal" accept="image/*" hidden>
+<button class="big" id="shoot" type="button">📷 Ler etiqueta</button>
+<div style="display:flex;justify-content:space-between">
+<button class="link" id="pick" type="button">Galeria</button>
+<button class="link" id="normal" type="button">Foto normal</button>
+<button class="link" id="manual" type="button">Digitar manualmente</button>
+</div>
+<p class="meta" style="margin:6px 0 0">Dica: aponte a câmera para a etiqueta e segure firme; a foto é tirada sozinha. Boa luz e sem reflexo ajudam.</p>
+<p class="status" id="status" role="status"></p>
+
+<form class="card" id="form" hidden onsubmit="return false">
+<img class="thumb" id="thumb" alt="Foto da etiqueta" hidden>
+<label class="field"><span>Produto</span><input type="text" id="nome" autocomplete="off"></label>
+<div class="prices">
+<label class="pbox"><span><input type="radio" name="pt" value="varejo" checked> Varejo</span><input type="text" id="pv" inputmode="decimal" placeholder="0,00"></label>
+<label class="pbox"><span><input type="radio" name="pt" value="atacado"> Atacado</span><input type="text" id="pa" inputmode="decimal" placeholder="0,00"></label>
+<label class="pbox small"><span>Atacado a partir de (unidades)</span><input type="text" id="pq" inputmode="numeric" placeholder="Opcional"></label>
+</div>
+<div class="field" style="display:flex;justify-content:space-between;align-items:center"><span style="margin:0">Quantidade</span><div class="step"><button type="button" id="qm" aria-label="Diminuir">−</button><output id="qv">1</output><button type="button" id="qp" aria-label="Aumentar">+</button></div></div>
+<p class="meta" id="prev" style="margin:0 0 10px"></p>
+<button class="save" id="save" type="button">Salvar nesta compra</button>
+<button class="save2" id="save2" type="button">Salvar e ler a próxima 📷</button>
+</form>
+<div id="vitens"></div>
+</section>
+
+<section id="cart" hidden><div id="cartbox"></div></section>
+
+<section id="hist" hidden>
+<div class="chips" id="chips"></div>
+<div id="list"></div>
+<div style="display:flex;justify-content:space-between;margin-top:8px"><button class="link" id="exp" type="button">Exportar backup</button><label class="link" style="cursor:pointer">Importar backup<input type="file" id="imp" accept="application/json" hidden></label></div>
+</section>
+</main>
+<div class="totbar" id="totbar" hidden><div><small id="tbl"></small>Total da compra</div><b id="tbv">R$ 0,00</b></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const h=(t,c,...k)=>{const e=document.createElement(t);if(c)e.className=c;k.flat().forEach(x=>e.append(x));return e};
+const KEY="binozi_market_v1";
+let st={visitas:[],atual:null,pref:"varejo",theme:null};
+let aba=1,filtro="Todos";const abertos=new Set();
+
+try{const r=localStorage.getItem(KEY);if(r)Object.assign(st,JSON.parse(r))}catch(e){}
+const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
+
+/* agrupa itens soltos (versão antiga ou backup antigo) em compras por mercado e dia */
+function agrupar(its){
+ const g={};
+ its.forEach(x=>{const m=x.market||"Sem mercado";const k=m+"|"+new Date(x.ts).toDateString();
+  (g[k]??={id:x.ts,market:m,ts:x.ts,itens:[]}).itens.push(x)});
+ return Object.values(g);
+}
+if(Array.isArray(st.hist)&&st.hist.length)st.visitas.push(...agrupar(st.hist));
+delete st.hist;persist();
+
+const cur=()=>st.visitas.find(v=>v.id===st.atual)||null;
+
+/* tema */
+const dark=()=>st.theme?st.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;
+function applyTheme(){
+ if(st.theme)document.documentElement.dataset.theme=st.theme;
+ $("#theme").textContent=dark()?"☀️ Claro":"🌙 Noturno";
+}
+$("#theme").onclick=()=>{st.theme=dark()?"light":"dark";persist();applyTheme()};
+applyTheme();
+
+/* dinheiro */
+const brl=n=>n==null||isNaN(n)?"—":n.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+function num(s){
+ s=String(s??"").replace(/[^\d,.]/g,"");
+ if(!s)return null;
+ if(s.includes(","))s=s.replace(/\./g,"").replace(",",".");
+ const n=parseFloat(s);return isNaN(n)?null:n;
+}
+const fmtIn=n=>n==null?"":n.toFixed(2).replace(".",",");
+const norm=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\s+/g," ").trim();
+const qt=x=>x.q||1,sub=x=>(x.preco||0)*qt(x);
+const resumo=v=>{const n=v.itens.length;return n+(n===1?" item":" itens")+" · "+brl(v.itens.reduce((a,x)=>a+sub(x),0))};
+const quando=ts=>new Date(ts).toLocaleString("pt-BR",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"});
+function confirma(btn,rotulo,fn){
+ btn.onclick=()=>{
+  if(btn.dataset.ok){fn();return}
+  btn.dataset.ok=1;btn.textContent="Toque de novo para confirmar";
+  setTimeout(()=>{btn.dataset.ok="";btn.textContent=rotulo},3000);
+ };
+}
+
+/* tela principal */
+function mercados(){return [...new Set(st.visitas.map(v=>v.market))]}
+function render(){
+ const v=cur();if(!v)st.atual=null;
+ $("#start").hidden=!(aba===1&&!v);$("#scan").hidden=!(aba===1&&!!v);$("#hist").hidden=aba!==2;$("#cart").hidden=aba!==3;
+ $("#t1").setAttribute("aria-selected",aba===1);$("#t2").setAttribute("aria-selected",aba===2);$("#t3").setAttribute("aria-selected",aba===3);
+ const ms=mercados();
+ $("#mk").replaceChildren(...ms.map(m=>{const o=document.createElement("option");o.value=m;return o}));
+ $("#recentes").replaceChildren(...ms.slice(-6).reverse().map(m=>{
+  const b=h("button","",m);b.type="button";b.onclick=()=>{$("#mkt").value=m};return b;
+ }));
+ if(v){
+  $("#vtitle").textContent=v.market;$("#vsum").textContent=resumo(v);
+  const box=$("#vitens");box.replaceChildren();
+  if(v.itens.length)box.append(h("div","meta","Nesta compra"));
+  const info=mkInfo();
+  v.itens.slice().sort((a,b)=>b.ts-a.ts).forEach(x=>box.append(itemEl(x,v,info)));
+ }
+ if(aba===2)renderHist();
+ if(aba===3)renderCart();
+ atualizarBarra();
+}
+$("#t1").onclick=()=>{aba=1;render()};
+$("#t2").onclick=()=>{aba=2;render()};
+$("#t3").onclick=()=>{aba=3;render()};
+
+/* iniciar e finalizar */
+function iniciar(){
+ const m=$("#mkt").value.trim();
+ if(!m){$("#sstatus").textContent="Digite o nome do mercado para começar.";$("#mkt").focus();return}
+ const v={id:Date.now(),market:m,ts:Date.now(),itens:[]};
+ st.visitas.push(v);st.atual=v.id;persist();aquecer();
+ $("#mkt").value="";$("#sstatus").textContent="";status("");$("#form").hidden=true;render();
+}
+$("#iniciar").onclick=iniciar;
+$("#mkt").onkeydown=e=>{if(e.key==="Enter")iniciar()};
+$("#fim").onclick=()=>{
+ const v=cur();if(!v)return;
+ $("#sstatus").textContent="Compra em "+v.market+" finalizada: "+resumo(v)+". Está no histórico.";
+ st.atual=null;persist();render();
+};
+
+/* preferência de preço */
+function setPref(v){
+ st.pref=v;persist();
+ document.querySelectorAll("#pref button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===v));
+ document.querySelector('input[name=pt][value='+v+']').checked=true;
+}
+document.querySelectorAll("#pref button").forEach(b=>b.onclick=()=>setPref(b.dataset.v));
+setPref(st.pref);
+
+/* leitura da etiqueta */
+const status=t=>$("#status").textContent=t;
+function openForm(d,url){
+ $("#form").hidden=false;
+ $("#nome").value=d.nome||"";
+ $("#pv").value=fmtIn(d.varejo);$("#pa").value=fmtIn(d.atacado);
+ $("#pq").value=d.qtd||"";
+ const t=$("#thumb");
+ if(url){t.src=url;t.hidden=false}else t.hidden=true;
+ setPref(st.pref);setQ(1);
+ $("#nome").focus({preventScroll:true});
+ $("#form").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function toCanvas(src,sx,sy,sw,sh,mx=1600){
+ const k=Math.min(2,mx/Math.max(sw,sh));
+ const c=document.createElement("canvas");c.width=Math.round(sw*k);c.height=Math.round(sh*k);
+ c.getContext("2d").drawImage(src,sx,sy,sw,sh,0,0,c.width,c.height);return c;
+}
+/* tons de cinza + contraste esticado (e inversão se o fundo for escuro) para o leitor enxergar melhor */
+function realce(c){
+ const g=c.getContext("2d"),im=g.getImageData(0,0,c.width,c.height),d=im.data,n=d.length/4;
+ const gray=new Uint8ClampedArray(n),hist=new Uint32Array(256);let soma=0;
+ for(let i=0;i<n;i++){const v=.299*d[4*i]+.587*d[4*i+1]+.114*d[4*i+2];gray[i]=v;hist[v|0]++;soma+=v}
+ const pc=p=>{let a=0;for(let i=0;i<256;i++){a+=hist[i];if(a>=n*p)return i}return 255};
+ let lo=pc(.02),hi=pc(.98);if(hi-lo<30){lo=0;hi=255}
+ const inv=soma/n<110;
+ for(let i=0;i<n;i++){let v=(gray[i]-lo)/(hi-lo)*255;v=v<0?0:v>255?255:v;if(inv)v=255-v;d[4*i]=d[4*i+1]=d[4*i+2]=v}
+ g.putImageData(im,0,0);return c;
+}
+/* nomes curtos: tira especificações técnicas. Ajuste a lista RUIDO se quiser. */
+const RUIDO=/\b(pet|garrafa|und|un|unid|unidade|unidades|emb|embalagem|cod|c[oó]d|c[oó]digo|ref|lote|validade|sem g[aá]s)\b/gi;
+const MIUDAS=new Set(["de","da","do","das","dos","com","e","para"]);
+function limpar(t){
+ t=t.replace(/\([^)]*\)/g," ").replace(RUIDO," ").replace(/[^A-Za-zÀ-ÿ0-9 ,.%\/-]/g," ");
+ const vistas=new Set(),out=[];
+ for(const w of t.split(/\s+/)){
+  if(!w||/\d{5,}/.test(w)||/^[-.,\/%]+$/.test(w))continue;
+  const k=w.toLowerCase();if(vistas.has(k))continue;vistas.add(k);out.push(w);
+ }
+ return out.slice(0,6).map((w,i)=>{
+  const l=w.toLowerCase();
+  return /\d/.test(l)||(i&&MIUDAS.has(l))?l:l[0].toUpperCase()+l.slice(1);
+ }).join(" ");
+}
+function lerTexto(d){
+ let L=(d.lines||[]).map(l=>({t:l.text.trim(),h:l.bbox.y1-l.bbox.y0,y:l.bbox.y0})).filter(l=>l.t);
+ if(!L.length)L=d.text.split(/\n/).map((t,i)=>({t:t.trim(),h:0,y:i})).filter(l=>l.t);
+ const linhas=L.map(l=>l.t);
+ const re=/(\d{1,3}(?:\.\d{3})*,\d{2}|\d+[,.]\d{2})/g,um=/\d+[,.]\d{2}/;
+ const kw=/atacado|leve|a partir|acima|cx|caixa/i;
+ let varejo=null,atacado=null,qtd=null;const livres=[];
+ linhas.forEach((l,i)=>{
+  const ant=linhas[i-1]||"";
+  const ctx=l+(/\d/.test(ant)?"":" "+ant);
+  const q=ctx.match(/(?:a partir de|leve|acima de|c\/|cx)\s*(\d+)/i);
+  [...l.matchAll(re)].map(m=>num(m[1])).forEach(p=>{
+   if(kw.test(ctx)){if(atacado==null){atacado=p;if(q)qtd=+q[1]}}
+   else if(varejo==null)varejo=p;else livres.push(p);
+  });
+ });
+ if(atacado==null&&livres.length)atacado=livres[0];
+ if(varejo!=null&&atacado!=null&&atacado>varejo)[varejo,atacado]=[atacado,varejo];
+ /* o nome principal costuma ser o texto maior: pega as linhas de maior altura */
+ const c=L.filter(l=>l.t.length>=4&&!um.test(l.t)&&!/atacado|varejo|leve|r\$|a partir/i.test(l.t)&&(l.t.match(/[A-Za-zÀ-ÿ]/g)||[]).length/l.t.length>.6);
+ const mx=Math.max(0,...c.map(l=>l.h));
+ const sel=c.filter(l=>l.h>=mx*.55).sort((a,b)=>b.h-a.h).slice(0,3).sort((a,b)=>a.y-b.y);
+ return{nome:limpar(sel.map(l=>l.t).join(" ")),varejo,atacado,qtd};
+}
+/* o leitor é criado uma vez e reaproveitado: da segunda foto em diante é bem mais rápido */
+let wk=null,onProg=()=>{};
+function getWorker(){
+ return wk??=Tesseract.createWorker("por",1,{logger:m=>{if(m.status==="recognizing text")onProg(m.progress)}}).catch(e=>{wk=null;throw e});
+}
+const aquecer=()=>{try{getWorker().catch(()=>{})}catch(e){}};
+async function ler(file){
+ if(!file)return;
+ try{const bm=await createImageBitmap(file);processar(toCanvas(bm,0,0,bm.width,bm.height))}
+ catch(e){status("Não consegui abrir a foto. Digite os dados.");openForm({})}
+}
+async function processar(col){
+ $("#form").hidden=true;status("Lendo a etiqueta…");
+ const t=document.createElement("canvas");t.width=480;t.height=Math.max(1,Math.round(480*col.height/col.width));
+ t.getContext("2d").drawImage(col,0,0,t.width,t.height);
+ const url=t.toDataURL("image/jpeg",.7);
+ realce(col);
+ try{
+  onProg=p=>status("Lendo a etiqueta… "+Math.round(p*100)+"%");
+  const w=await getWorker();
+  const r=await w.recognize(col);
+  openForm(lerTexto(r.data),url);
+  status("Confira os valores lidos antes de salvar.");
+ }catch(e){
+  status("Não consegui ler esta foto. Tente de mais perto, com internet na primeira leitura, ou digite os dados.");
+  openForm({},url);
+ }
+}
+let stream=null,camId=0,loopId=0,guarda=null,wl=null;
+const camst=t=>{$("#camst").textContent=t};
+function pintaAuto(){const b=$("#camauto"),off=st.auto===false;b.textContent=off?"Auto ✕":"Auto ✓";b.style.background=off?"#fff":"#3DDC84";b.style.color="#111"}
+async function manterTela(on){try{if(on)wl=await navigator.wakeLock.request("screen");else if(wl){await wl.release();wl=null}}catch(e){}}
+function miniatura(col){
+ const t=document.createElement("canvas");t.width=480;t.height=Math.max(1,Math.round(480*col.height/col.width));
+ t.getContext("2d").drawImage(col,0,0,t.width,t.height);return t.toDataURL("image/jpeg",.7);
+}
+function recorteFrame(mx){
+ const v=$("#vid"),fr=$("#frame").getBoundingClientRect(),vr=v.getBoundingClientRect();
+ const vw=v.videoWidth,vh=v.videoHeight;if(!vw)return null;
+ const k=Math.max(vr.width/vw,vr.height/vh),ox=(vw*k-vr.width)/2,oy=(vh*k-vr.height)/2;
+ const sx=Math.max(0,(fr.left-vr.left+ox)/k),sy=Math.max(0,(fr.top-vr.top+oy)/k);
+ const sw=Math.min(vw-sx,fr.width/k),sh=Math.min(vh-sy,fr.height/k);
+ return toCanvas(v,sx,sy,sw,sh,mx);
+}
+function falhaCamera(code){
+ const dicas={
+  NotAllowedError:"A câmera está bloqueada para este site. No Chrome, toque no ícone ao lado do endereço, depois em Permissões, e permita a Câmera.",
+  NotFoundError:"Nenhuma câmera encontrada.",
+  NotReadableError:"Outro app está usando a câmera. Feche-o e tente de novo.",
+  SecurityError:"Abra o app pelo endereço que começa com https.",
+  OverconstrainedError:"A câmera não aceitou a configuração."};
+ status("Leitor automático indisponível ("+code+"). "+(dicas[code]||"")+" Enquanto isso, use Foto normal.");
+}
+async function abrirCamera(manter){
+ aquecer();
+ if(!manter)guarda=null;
+ if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+  falhaCamera(window.isSecureContext?"sem suporte":"página sem https");return;
+ }
+ try{
+  try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"},width:{ideal:1920},height:{ideal:1080}},audio:false})}
+  catch(e1){
+   if(e1.name==="NotAllowedError"||e1.name==="SecurityError")throw e1;
+   stream=await navigator.mediaDevices.getUserMedia({video:true,audio:false});
+  }
+  camId++;$("#camov").hidden=false;$("#frame").classList.remove("ok");
+  const v=$("#vid");v.srcObject=stream;
+  try{await v.play()}catch(e){}
+  pintaAuto();manterTela(true);
+  if(st.auto===false)camst("Toque em Capturar");
+  else{camst("Procurando etiqueta…");loopLeitor(camId)}
+ }catch(e){
+  fecharCamera();falhaCamera(e&&e.name?e.name:String(e));
+ }
+}
+function fecharCamera(){camId++;if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;$("#camov").hidden=true;manterTela(false)}
+/* leitor: lê a moldura continuamente e tira a foto sozinho quando acha preço + nome duas vezes seguidas iguais */
+async function loopLeitor(id){
+ if(loopId===id)return;loopId=id;
+ try{
+  camst("Preparando leitor…");
+  let w;try{w=await getWorker()}catch(e){camst("Leitor indisponível agora. Use Capturar.");return}
+  if(id===camId)camst("Procurando etiqueta…");
+  let ult=null,rep=0;
+  const fr=$("#frame");
+  while(stream&&id===camId&&st.auto!==false){
+   const col=recorteFrame(1100);
+   if(!col){await new Promise(r=>setTimeout(r,300));continue}
+   const url=miniatura(col);realce(col);
+   let r;try{r=await w.recognize(col)}catch(e){break}
+   if(!(stream&&id===camId))break;
+   const d=lerTexto(r.data);
+   const chave=(d.varejo!=null||d.atacado!=null)&&d.nome.length>=3?d.varejo+"|"+d.atacado:null;
+   if(guarda&&chave&&chave!==guarda)guarda=null;
+   if(!chave){ult=null;rep=0;fr.classList.remove("ok");camst("Procurando etiqueta…");continue}
+   if(chave===guarda){ult=null;rep=0;fr.classList.remove("ok");camst("Mesma etiqueta. Aponte para a próxima.");continue}
+   fr.classList.add("ok");
+   if(chave===ult)rep++;else{ult=chave;rep=1;camst("Etiqueta encontrada. Segure firme…")}
+   if(rep>=2){
+    guarda=chave;
+    if(navigator.vibrate)navigator.vibrate(80);
+    fecharCamera();
+    openForm(d,url);
+    status("Etiqueta lida automaticamente. Confira e salve.");
+    return;
+   }
+  }
+ }finally{if(loopId===id)loopId=0}
+}
+$("#camx").onclick=fecharCamera;
+$("#camauto").onclick=()=>{
+ st.auto=st.auto===false;persist();pintaAuto();
+ if(st.auto!==false){camst("Procurando etiqueta…");loopLeitor(camId)}else camst("Toque em Capturar");
+};
+$("#camok").onclick=()=>{
+ const col=recorteFrame(1600);if(!col)return;
+ if(navigator.vibrate)navigator.vibrate(50);
+ fecharCamera();processar(col);
+};
+$("#shoot").onclick=()=>abrirCamera(false);
+$("#normal").onclick=()=>$("#cam").click();
+["#nome","#pv","#pa"].forEach(q=>$(q).addEventListener("focus",e=>e.target.select()));
+$("#pick").onclick=()=>$("#gal").click();
+$("#cam").onchange=e=>{ler(e.target.files[0]);e.target.value=""};
+$("#gal").onchange=e=>{ler(e.target.files[0]);e.target.value=""};
+$("#manual").onclick=()=>{status("");openForm({})};
+
+/* salvar item na compra atual */
+let qn=1;
+const setQ=n=>{qn=Math.max(1,Math.min(999,n));$("#qv").textContent=qn;previa()};
+["#pv","#pa"].forEach(q=>$(q).addEventListener("input",previa));
+document.querySelectorAll("input[name=pt]").forEach(r=>r.addEventListener("change",previa));
+$("#qm").onclick=()=>setQ(qn-1);$("#qp").onclick=()=>setQ(qn+1);
+function salvar(proxima){
+ const v=cur();if(!v)return;
+ const nome=$("#nome").value.trim();
+ const tipo=document.querySelector("input[name=pt]:checked").value;
+ const pv=num($("#pv").value),pa=num($("#pa").value);
+ const preco=tipo==="atacado"?pa:pv;
+ if(!nome){status("Informe o nome do produto.");return}
+ if(preco==null){status("Informe o preço de "+tipo+".");return}
+ const k=norm(nome);
+ const ja=v.itens.find(x=>norm(x.nome)===k&&x.tipo===tipo&&x.preco===preco);
+ if(ja){ja.q=qt(ja)+qn;status("Já estava na compra: "+nome+" agora ×"+ja.q+".")}
+ else{v.itens.push({id:Date.now(),ts:Date.now(),nome,tipo,preco,varejo:pv,atacado:pa,qtd:parseInt($("#pq").value)||null,q:qn});status("Salvo: "+nome+" – "+brl(preco)+" ("+tipo+") ×"+qn+".")}
+ persist();$("#form").hidden=true;setQ(1);render();
+ if(proxima)abrirCamera(true);
+}
+$("#save").onclick=()=>salvar(false);
+$("#save2").onclick=()=>salvar(true);
+
+/* itens e histórico */
+function mkInfo(){
+ const info={};
+ st.visitas.forEach(v=>v.itens.forEach(x=>{
+  const k=norm(x.nome);(info[k]??={min:Infinity,ms:new Set()});
+  info[k].min=Math.min(info[k].min,x.preco);info[k].ms.add(v.market);
+ }));
+ return info;
+}
+function itemEl(x,v,info){
+ const k=info[norm(x.nome)];
+ const outro=x.tipo==="atacado"?["Varejo",x.varejo]:["Atacado",x.atacado];
+ const del=h("button","del","Remover");del.type="button";
+ confirma(del,"Remover",()=>{v.itens=v.itens.filter(y=>y.id!==x.id);persist();render()});
+ return h("div","item",
+  h("b","",x.nome+(qt(x)>1?" ×"+qt(x):"")),
+  h("div","tag",brl(x.preco),h("small","",x.tipo==="atacado"?"Atacado":"Varejo")),
+  h("div","meta",quando(x.ts)+(qt(x)>1?" · Subtotal "+brl(sub(x)):"")+(outro[1]!=null?" · "+outro[0]+" "+brl(outro[1])+(outro[0]==="Atacado"&&x.qtd?" (a partir de "+x.qtd+" un.)":""):"")),
+  h("div","best",k&&k.ms.size>1&&x.preco===k.min?"Menor preço entre os mercados":""),
+  del);
+}
+function visitaEl(v,info){
+ const d=h("details","card vc");
+ d.open=abertos.has(v.id)||v.id===st.atual;
+ d.append(h("summary","",
+  h("b","",v.market+(v.id===st.atual?" · em andamento":"")),
+  h("span","meta",quando(v.ts)+" · "+resumo(v))));
+ if(!v.itens.length)d.append(h("div","empty","Nenhum item nesta compra."));
+ v.itens.slice().sort((a,b)=>b.ts-a.ts).forEach(x=>d.append(itemEl(x,v,info)));
+ const acts=h("div","acts");
+ if(v.id!==st.atual){
+  const c=h("button","link","Continuar esta compra");c.type="button";
+  c.onclick=()=>{st.atual=v.id;aba=1;persist();render()};acts.append(c);
+ }else acts.append(h("span",""));
+ const r=h("button","del","Remover compra");r.type="button";
+ confirma(r,"Remover compra",()=>{st.visitas=st.visitas.filter(y=>y.id!==v.id);if(st.atual===v.id)st.atual=null;persist();render()});
+ acts.append(r);d.append(acts);
+ d.addEventListener("toggle",()=>{d.open?abertos.add(v.id):abertos.delete(v.id)});
+ return d;
+}
+function renderHist(){
+ const ms=["Todos",...mercados()];
+ if(!ms.includes(filtro))filtro="Todos";
+ $("#chips").replaceChildren(...ms.map(m=>{
+  const n=(m==="Todos"?st.visitas:st.visitas.filter(v=>v.market===m)).length;
+  const b=h("button","",m+" ("+n+")");b.type="button";
+  b.setAttribute("aria-pressed",m===filtro);
+  b.onclick=()=>{filtro=m;renderHist()};return b;
+ }));
+ const box=$("#list");box.replaceChildren();
+ const vs=st.visitas.filter(v=>filtro==="Todos"||v.market===filtro).sort((a,b)=>b.ts-a.ts);
+ if(!vs.length){box.append(h("div","empty","Nenhuma compra ainda. Na aba Compras, informe o mercado e inicie."));return}
+ const info=mkInfo();
+ vs.forEach(v=>box.append(visitaEl(v,info)));
+}
+
+let ultimo=null;
+function atualizarBarra(){
+ const v=cur(),b=$("#totbar");
+ b.hidden=!(v&&aba!==2);
+ if(!v)return;
+ const tot=v.itens.reduce((a,x)=>a+sub(x),0),un=v.itens.reduce((a,x)=>a+qt(x),0),n=v.itens.length;
+ $("#tbl").textContent=n+(n===1?" item":" itens")+(un!==n?" · "+un+" un.":"");
+ const el=$("#tbv");el.textContent=brl(tot);
+ if(ultimo!==null&&ultimo!==tot){el.classList.remove("bump");void el.offsetWidth;el.classList.add("bump")}
+ ultimo=tot;
+}
+function previa(){
+ const v=cur(),p=$("#prev");
+ if(!v){p.textContent="";return}
+ const tipo=document.querySelector("input[name=pt]:checked").value;
+ const preco=num($(tipo==="atacado"?"#pa":"#pv").value);
+ if(preco==null){p.textContent="";return}
+ const tot=v.itens.reduce((a,x)=>a+sub(x),0);
+ p.textContent="Este item: "+brl(preco*qn)+" · total passa a "+brl(tot+preco*qn);
+}
+function renderCart(){
+ const box=$("#cartbox");box.replaceChildren();atualizarBarra();
+ const v=cur();
+ if(!v){box.append(h("div","empty","Inicie uma compra na aba Compras para montar o carrinho."));return}
+ box.append(h("div","meta","Comprando em "+v.market+". Ajuste a quantidade de cada item."));
+ if(!v.itens.length)box.append(h("div","empty","Nenhum item ainda."));
+ v.itens.slice().sort((a,b)=>a.ts-b.ts).forEach(x=>{
+  const mk=(t,f,l)=>{const b=h("button","",t);b.type="button";b.setAttribute("aria-label",l);b.onclick=f;return b};
+  const step=h("div","step",
+   mk("−",()=>{x.q=Math.max(1,qt(x)-1);persist();renderCart()},"Diminuir"),
+   h("output","",String(qt(x))),
+   mk("+",()=>{x.q=qt(x)+1;persist();renderCart()},"Aumentar"));
+  const del=h("button","del","Remover");del.type="button";
+  confirma(del,"Remover",()=>{v.itens=v.itens.filter(y=>y.id!==x.id);persist();renderCart()});
+  box.append(h("div","crow",h("b","",x.nome),step,
+   h("span","meta",brl(x.preco)+" ("+(x.tipo==="atacado"?"atacado":"varejo")+") · Subtotal "+brl(sub(x))),del));
+ });
+ box.append(h("div","tot",h("span","","Total"),h("span","",brl(v.itens.reduce((a,x)=>a+sub(x),0)))));
+}
+
+/* backup */
+$("#exp").onclick=()=>{
+ const a=document.createElement("a");
+ a.href=URL.createObjectURL(new Blob([JSON.stringify(st.visitas)],{type:"application/json"}));
+ a.download="binozi-market-historico.json";a.click();
+};
+$("#imp").onchange=async e=>{
+ try{
+  const d=JSON.parse(await e.target.files[0].text());
+  const novas=d.length&&d[0].itens?d:agrupar(d);
+  const ids=new Set(st.visitas.map(v=>v.id));
+  novas.forEach(v=>{if(v&&v.market&&Array.isArray(v.itens)&&!ids.has(v.id))st.visitas.push(v)});
+  persist();render();
+ }catch(err){}
+ e.target.value="";
+};
+
+render();
+if(cur())aquecer();
+if("serviceWorker" in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script>
+</body>
+</html>
