@@ -134,11 +134,11 @@ body{background-image:linear-gradient(180deg,var(--card),var(--bg) 260px)}
 <div class="row"><span>Leitura por IA (Gemini)</span><label class="sw"><input type="checkbox" id="iaon" aria-label="Leitura por IA"><i></i></label></div>
 <p class="meta" style="margin:0">Com internet, o Gemini, do Google, lê a etiqueta com mais precisão. Sem internet ou se falhar, o app usa o leitor local. Crie uma chave grátis em <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com</a> (botão Get API key). A chave fica só neste celular. No plano gratuito, o Google pode usar as fotos enviadas para melhorar os produtos dele.</p>
 <input type="password" id="iakey" placeholder="Cole sua chave aqui" autocomplete="off">
-<input type="text" id="iamodel" placeholder="Modelo (padrão: gemini-2.5-flash)" autocomplete="off">
+<input type="text" id="iamodel" placeholder="Modelo (padrão: gemini-flash-latest)" autocomplete="off">
 <button class="link" id="iatest" type="button" style="justify-self:start">Testar chave</button>
 <p class="meta" id="iast" role="status" style="margin:0"></p>
 </div>
-<p class="meta" style="text-align:center;margin-top:18px">Bino Reader · versão 6</p>
+<p class="meta" style="text-align:center;margin-top:18px">Bino Reader · versão 7</p>
 </div></div>
 <div class="cam" id="camov" hidden><video id="vid" playsinline muted></video><div class="frame" id="frame"></div>
 <div class="camtxt">Aponte para a etiqueta dentro da moldura. A foto é tirada sozinha quando ela for reconhecida.</div>
@@ -406,16 +406,16 @@ async function ler(file){
 const iaOn=()=>!!(st.ia.on&&st.ia.key&&navigator.onLine!==false);
 const b64=c=>{const t=document.createElement("canvas"),k=Math.min(1,1024/Math.max(c.width,c.height));t.width=Math.round(c.width*k);t.height=Math.round(c.height*k);t.getContext("2d").drawImage(c,0,0,t.width,t.height);return t.toDataURL("image/jpeg",.85).split(",")[1]};
 const PROMPT_IA=`Esta é a foto de uma etiqueta de preço de prateleira de supermercado brasileiro. Extraia os dados e responda somente com JSON no formato {"nome":string|null,"varejo":number|null,"atacado":number|null,"qtd":number|null}. "nome": nome curto do produto no formato produto + marca + tamanho, sem especificações técnicas, códigos nem descrições longas (exemplos: "Água Mineral 500ml Indaiá", "Biscoito Treloso Bem Casado"). "varejo": preço normal de venda de 1 unidade, em reais. "atacado": preço de atacado ou de "leve mais", em reais. "qtd": quantidade mínima para valer o preço de atacado. Use null no que não estiver visível. Não invente valores.`;
-const modeloIA=()=>(st.ia.modelo||"gemini-2.5-flash").trim();
+const modeloIA=()=>(st.ia.modelo||"gemini-flash-latest").trim();
 const GEM="https://generativelanguage.googleapis.com/v1beta/models";
 function erroIA(cod,msg){
- return cod===429?"limite gratuito atingido, tente em 1 minuto":(cod===400||cod===403)&&/key|permission/i.test(msg)?"chave inválida":cod===404?"modelo não encontrado (teste a chave nas Opções)":"erro "+cod;
+ return cod===429?"limite gratuito atingido, tente em 1 minuto":(cod===400||cod===403)&&/key|permission/i.test(msg)?"chave inválida":cod===404?"modelo indisponível"+(msg?" ("+msg.slice(0,110)+")":""):"erro "+cod;
 }
-async function chamaIA(partes){
+async function chamaIA(partes,modelo){
  const ac=new AbortController(),t=setTimeout(()=>ac.abort(),20000);
  let r;
  try{
-  r=await fetch(GEM+"/"+modeloIA()+":generateContent",{method:"POST",signal:ac.signal,
+  r=await fetch(GEM+"/"+(modelo||modeloIA())+":generateContent",{method:"POST",signal:ac.signal,
    headers:{"Content-Type":"application/json","x-goog-api-key":st.ia.key},
    body:JSON.stringify({contents:[{parts:partes}],generationConfig:{temperature:0}})});
  }catch(e){throw new Error(e.name==="AbortError"?"demorou demais":"sem internet")}
@@ -740,13 +740,18 @@ $("#iatest").onclick=async()=>{
   o.textContent="Funcionando ✓ (modelo "+modeloIA()+"). Ative a opção acima para usar.";
  }catch(e){
   o.textContent="Não funcionou: "+e.message+".";
-  if(/modelo não encontrado/.test(e.message)){
+  if(/modelo indisponível/.test(e.message)){
+   o.textContent+=" Procurando outro modelo…";
    try{
     const r=await fetch(GEM+"?pageSize=200",{headers:{"x-goog-api-key":st.ia.key}});
     const j=await r.json();
-    const ls=(j.models||[]).filter(m=>(m.supportedGenerationMethods||[]).includes("generateContent")).map(m=>m.name.replace("models/","")).filter(n=>/flash/.test(n)&&!/image|tts|audio|live|embed/.test(n)).slice(0,6);
-    if(ls.length)o.textContent+=" Modelos disponíveis, digite um no campo Modelo: "+ls.join(", ")+".";
-   }catch(e2){}
+    const ordem=n=>(/latest/.test(n)?-5:0)+(/preview|exp/.test(n)?10:0)+(/lite/.test(n)?1:0);
+    const ls=(j.models||[]).filter(m=>(m.supportedGenerationMethods||[]).includes("generateContent")).map(m=>m.name.replace("models/","")).filter(n=>/flash/.test(n)&&!/image|tts|audio|live|embed|robotics/.test(n)&&n!==modeloIA()).sort((a,b)=>ordem(a)-ordem(b));
+    let ok=null;
+    for(const n of ls.slice(0,6)){try{await chamaIA([{text:"Responda apenas: ok"}],n);ok=n;break}catch(e3){}}
+    if(ok){st.ia.modelo=ok;persist();pintaIA();o.textContent="Funcionando ✓. Troquei o modelo para "+ok+". Ative a opção acima para usar."}
+    else o.textContent="Nenhum modelo respondeu. Tente de novo em 1 minuto ou digite outro no campo Modelo."
+   }catch(e2){o.textContent="Não funcionou: "+e.message+"."}
   }
  }
 };
