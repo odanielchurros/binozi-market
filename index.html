@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Binozi Market 🛒</title>
+<title>Bino Reader 🛒</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛒</text></svg>">
-<meta name="apple-mobile-web-app-title" content="Binozi Market">
+<meta name="apple-mobile-web-app-title" content="Bino Reader">
 <meta name="theme-color" content="#0B6B52">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -29,7 +29,7 @@ button{cursor:pointer}
 .icon{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 14px;font-weight:600}
 .field{display:block;margin-bottom:12px}
 .field>span{display:block;font-size:.85rem;color:var(--mute);margin-bottom:4px}
-input[type=text]{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--card);font-size:1rem}
+input[type=text],input[type=password]{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--card);font-size:1rem}
 .seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px;margin-bottom:14px}
 .seg button{border:0;background:transparent;padding:10px;border-radius:9px;font-weight:600;color:var(--mute)}
 .seg button[aria-pressed=true],.seg button[aria-selected=true]{background:var(--accent);color:var(--onaccent)}
@@ -90,33 +90,82 @@ details.vc>.acts{display:flex;justify-content:space-between;margin-bottom:6px}
 .bump{animation:bump .35s}
 @keyframes bump{40%{transform:scale(1.12)}}
 @media (prefers-reduced-motion:reduce){.bump{animation:none}}
+body{background-image:linear-gradient(180deg,var(--card),var(--bg) 260px)}
+.big{box-shadow:0 3px 0 rgba(0,0,0,.18)}
+.top{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:8px;margin-bottom:16px}
+.brand{margin:0;display:flex;justify-content:center;align-items:center;gap:6px;font-size:1.55rem;font-weight:800;letter-spacing:-.03em;line-height:1}
+.brand em{font-style:normal;background:var(--tag);color:var(--tagink);padding:5px 11px 5px 16px;clip-path:polygon(0 50%,11px 0,100% 0,100% 100%,11px 100%)}
+.brand i{font-style:normal;font-size:1.35rem}
+.dots{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--card);font-size:1.4rem;font-weight:800}
+.avatar{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:var(--tag) center/cover no-repeat;color:var(--tagink);font-weight:800;font-size:1.2rem;border:2px solid var(--accent);padding:0;cursor:pointer;flex:none}
+.avatar.big{width:72px;height:72px;font-size:1.8rem}
+.avatar.xl{width:84px;height:84px;font-size:2.2rem;cursor:default}
+.hero{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;margin:4px 0 8px}
+.hero h2{margin:6px 0 4px}
+.sheet{position:fixed;inset:0;z-index:60}
+.scrim{position:absolute;inset:0;background:rgba(0,0,0,.5)}
+.panel{position:absolute;left:0;right:0;bottom:0;max-width:520px;margin:0 auto;max-height:90%;overflow-y:auto;background:var(--bg);border-radius:20px 20px 0 0;padding:16px 16px calc(env(safe-area-inset-bottom,0px) + 20px)}
+.ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:1.2rem}
+.who{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin:10px 0;font-weight:600;text-align:left}
+.sec{margin-top:16px;display:grid;gap:8px}
+.sec .row{margin:0}
+.sw{position:relative;width:52px;height:30px;flex:none}
+.sw input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.sw i{position:absolute;inset:0;background:var(--line);border-radius:999px;transition:.2s;pointer-events:none}
+.sw i::after{content:"";position:absolute;left:3px;top:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:.2s}
+.sw input:checked+i{background:var(--accent)}
+.sw input:checked+i::after{transform:translateX(22px)}
+.sw input:focus-visible+i{outline:3px solid var(--accent);outline-offset:2px}
 [hidden]{display:none!important}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
 </head>
 <body>
+<div class="sheet" id="menu" hidden>
+<div class="scrim" id="scrim"></div>
+<div class="panel" role="dialog" aria-label="Opções">
+<div class="ph"><b>Opções</b><button class="icon" id="mclose" type="button">Fechar</button></div>
+<div class="who"><label class="avatar big" for="foto" aria-label="Trocar foto"></label><input type="file" id="foto" accept="image/*" hidden>
+<div style="flex:1"><input type="text" id="pnome" placeholder="Seu nome" autocomplete="given-name"><span class="meta">Toque na foto para trocar</span></div></div>
+<div class="row"><span>Modo escuro</span><label class="sw"><input type="checkbox" id="dk" aria-label="Modo escuro"><i></i></label></div>
+<button class="row" id="mhist" type="button"><span>Histórico de compras</span><span>›</span></button>
+<div class="sec">
+<div class="row"><span>Leitura por IA (Gemini)</span><label class="sw"><input type="checkbox" id="iaon" aria-label="Leitura por IA"><i></i></label></div>
+<p class="meta" style="margin:0">Com internet, o Gemini, do Google, lê a etiqueta com mais precisão. Sem internet ou se falhar, o app usa o leitor local. Crie uma chave grátis em <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com</a> (botão Get API key). A chave fica só neste celular. No plano gratuito, o Google pode usar as fotos enviadas para melhorar os produtos dele.</p>
+<input type="password" id="iakey" placeholder="Cole sua chave aqui" autocomplete="off">
+<input type="text" id="iamodel" placeholder="Modelo (padrão: gemini-2.5-flash)" autocomplete="off">
+<button class="link" id="iatest" type="button" style="justify-self:start">Testar chave</button>
+<p class="meta" id="iast" role="status" style="margin:0"></p>
+</div>
+<p class="meta" style="text-align:center;margin-top:18px">Bino Reader · versão 6</p>
+</div></div>
 <div class="cam" id="camov" hidden><video id="vid" playsinline muted></video><div class="frame" id="frame"></div>
 <div class="camtxt">Aponte para a etiqueta dentro da moldura. A foto é tirada sozinha quando ela for reconhecida.</div>
 <div class="camst" id="camst" role="status"></div>
 <div class="camact"><button id="camx" type="button">Cancelar</button><button id="camauto" type="button">Auto ✓</button><button id="camok" type="button" style="background:var(--tag);color:var(--tagink)">Capturar</button></div></div>
 <main>
-<header><h1>Binozi Market 🛒</h1><button class="icon" id="theme" type="button" aria-label="Alternar modo noturno">🌙 Noturno</button></header>
+<header class="top">
+<button class="avatar" id="avt" type="button" aria-label="Perfil e opções"></button>
+<h1 class="brand"><span>Bino</span><em>Reader</em><i aria-hidden="true">🛒</i></h1>
+<button class="dots" id="dots" type="button" aria-label="Opções">⋮</button>
+</header>
 
-<div class="seg" role="tablist">
+<div class="seg" id="tabs" role="tablist" hidden>
 <button role="tab" id="t1" aria-selected="true" type="button">Compras</button>
 <button role="tab" id="t3" aria-selected="false" type="button">Carrinho</button>
-<button role="tab" id="t2" aria-selected="false" type="button">Histórico</button>
 </div>
 
 <section id="start">
-<h2>Em qual mercado compraremos hoje?</h2>
+<div class="hero"><div class="avatar xl" id="avh" aria-hidden="true"></div><h2 id="ask">Em qual mercado compraremos hoje?</h2></div>
+<div class="card" id="nomecard" hidden><label class="field"><span>Como posso te chamar?</span><input type="text" id="nome0" placeholder="Seu nome" autocomplete="given-name"></label>
+<div style="display:flex;gap:10px;align-items:center"><button class="save" id="nsave" type="button" style="flex:1">Salvar nome</button><button class="link" id="nskip" type="button">Agora não</button></div></div>
 <label class="field"><span>Nome do mercado</span>
 <input type="text" id="mkt" list="mk" placeholder="Ex.: Atacadão, Assaí…" autocomplete="off"></label>
 <datalist id="mk"></datalist>
 <div class="chips" id="recentes"></div>
 <button class="big" id="iniciar" type="button">Iniciar compras</button>
 <p class="status" id="sstatus" role="status"></p>
-<p class="meta" style="margin-top:28px">Versão 5</p>
 </section>
 
 <section id="scan" hidden>
@@ -161,6 +210,8 @@ details.vc>.acts{display:flex;justify-content:space-between;margin-bottom:6px}
 <section id="cart" hidden><div id="cartbox"></div></section>
 
 <section id="hist" hidden>
+<button class="link" id="hback" type="button">← Voltar</button>
+<h2 style="margin:0 0 10px;text-align:left">Histórico</h2>
 <div class="chips" id="chips"></div>
 <div id="list"></div>
 <div style="display:flex;justify-content:space-between;margin-top:8px"><button class="link" id="exp" type="button">Exportar backup</button><label class="link" style="cursor:pointer">Importar backup<input type="file" id="imp" accept="application/json" hidden></label></div>
@@ -176,6 +227,8 @@ let st={visitas:[],atual:null,pref:"varejo",theme:null};
 let aba=1,filtro="Todos";const abertos=new Set();
 
 try{const r=localStorage.getItem(KEY);if(r)Object.assign(st,JSON.parse(r))}catch(e){}
+st.perfil=Object.assign({nome:"",foto:"",pulou:false},st.perfil);
+st.ia=Object.assign({on:false,key:"",modelo:""},st.ia);
 const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
 
 /* agrupa itens soltos (versão antiga ou backup antigo) em compras por mercado e dia */
@@ -194,9 +247,8 @@ const cur=()=>st.visitas.find(v=>v.id===st.atual)||null;
 const dark=()=>st.theme?st.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;
 function applyTheme(){
  if(st.theme)document.documentElement.dataset.theme=st.theme;
- $("#theme").textContent=dark()?"☀️ Claro":"🌙 Noturno";
+ $("#dk").checked=dark();
 }
-$("#theme").onclick=()=>{st.theme=dark()?"light":"dark";persist();applyTheme()};
 applyTheme();
 
 /* dinheiro */
@@ -224,8 +276,10 @@ function confirma(btn,rotulo,fn){
 function mercados(){return [...new Set(st.visitas.map(v=>v.market))]}
 function render(){
  const v=cur();if(!v)st.atual=null;
+ if(aba===3&&!v)aba=1;
+ $("#tabs").hidden=!(v&&aba!==2);pintaPerfil();
  $("#start").hidden=!(aba===1&&!v);$("#scan").hidden=!(aba===1&&!!v);$("#hist").hidden=aba!==2;$("#cart").hidden=aba!==3;
- $("#t1").setAttribute("aria-selected",aba===1);$("#t2").setAttribute("aria-selected",aba===2);$("#t3").setAttribute("aria-selected",aba===3);
+ $("#t1").setAttribute("aria-selected",aba===1);$("#t3").setAttribute("aria-selected",aba===3);
  const ms=mercados();
  $("#mk").replaceChildren(...ms.map(m=>{const o=document.createElement("option");o.value=m;return o}));
  $("#recentes").replaceChildren(...ms.slice(-6).reverse().map(m=>{
@@ -243,7 +297,6 @@ function render(){
  atualizarBarra();
 }
 $("#t1").onclick=()=>{aba=1;render()};
-$("#t2").onclick=()=>{aba=2;render()};
 $("#t3").onclick=()=>{aba=3;render()};
 
 /* iniciar e finalizar */
@@ -350,20 +403,51 @@ async function ler(file){
  try{const bm=await createImageBitmap(file);processar(toCanvas(bm,0,0,bm.width,bm.height))}
  catch(e){status("Não consegui abrir a foto. Digite os dados.");openForm({})}
 }
+const iaOn=()=>!!(st.ia.on&&st.ia.key&&navigator.onLine!==false);
+const b64=c=>{const t=document.createElement("canvas"),k=Math.min(1,1024/Math.max(c.width,c.height));t.width=Math.round(c.width*k);t.height=Math.round(c.height*k);t.getContext("2d").drawImage(c,0,0,t.width,t.height);return t.toDataURL("image/jpeg",.85).split(",")[1]};
+const PROMPT_IA=`Esta é a foto de uma etiqueta de preço de prateleira de supermercado brasileiro. Extraia os dados e responda somente com JSON no formato {"nome":string|null,"varejo":number|null,"atacado":number|null,"qtd":number|null}. "nome": nome curto do produto no formato produto + marca + tamanho, sem especificações técnicas, códigos nem descrições longas (exemplos: "Água Mineral 500ml Indaiá", "Biscoito Treloso Bem Casado"). "varejo": preço normal de venda de 1 unidade, em reais. "atacado": preço de atacado ou de "leve mais", em reais. "qtd": quantidade mínima para valer o preço de atacado. Use null no que não estiver visível. Não invente valores.`;
+const modeloIA=()=>(st.ia.modelo||"gemini-2.5-flash").trim();
+const GEM="https://generativelanguage.googleapis.com/v1beta/models";
+function erroIA(cod,msg){
+ return cod===429?"limite gratuito atingido, tente em 1 minuto":(cod===400||cod===403)&&/key|permission/i.test(msg)?"chave inválida":cod===404?"modelo não encontrado (teste a chave nas Opções)":"erro "+cod;
+}
+async function chamaIA(partes){
+ const ac=new AbortController(),t=setTimeout(()=>ac.abort(),20000);
+ let r;
+ try{
+  r=await fetch(GEM+"/"+modeloIA()+":generateContent",{method:"POST",signal:ac.signal,
+   headers:{"Content-Type":"application/json","x-goog-api-key":st.ia.key},
+   body:JSON.stringify({contents:[{parts:partes}],generationConfig:{temperature:0}})});
+ }catch(e){throw new Error(e.name==="AbortError"?"demorou demais":"sem internet")}
+ finally{clearTimeout(t)}
+ const j=await r.json().catch(()=>({}));
+ if(!r.ok)throw new Error(erroIA(r.status,(j.error&&j.error.message)||""));
+ const ps=(((j.candidates||[])[0]||{}).content||{}).parts||[];
+ return ps.map(p=>p.text||"").join("");
+}
+async function lerIA(b){
+ const txt=await chamaIA([{text:PROMPT_IA},{inline_data:{mime_type:"image/jpeg",data:b}}]);
+ const m=txt.match(/\{[\s\S]*\}/);if(!m)throw new Error("resposta vazia");
+ let d;try{d=JSON.parse(m[0])}catch(e){throw new Error("resposta inválida")}
+ return{nome:String(d.nome||"").trim(),varejo:num(d.varejo),atacado:num(d.atacado),qtd:d.qtd?parseInt(d.qtd)||null:null};
+}
 async function processar(col){
  $("#form").hidden=true;status("Lendo a etiqueta…");
- const t=document.createElement("canvas");t.width=480;t.height=Math.max(1,Math.round(480*col.height/col.width));
- t.getContext("2d").drawImage(col,0,0,t.width,t.height);
- const url=t.toDataURL("image/jpeg",.7);
+ const url=miniatura(col);
+ let aviso="";
+ if(iaOn()){
+  try{status("Lendo com IA…");const d=await lerIA(b64(col));openForm(d,url);status("Lida com IA. Confira antes de salvar.");return}
+  catch(e){aviso="IA indisponível ("+e.message+"). Usei o leitor local. "}
+ }
  realce(col);
  try{
   onProg=p=>status("Lendo a etiqueta… "+Math.round(p*100)+"%");
   const w=await getWorker();
   const r=await w.recognize(col);
   openForm(lerTexto(r.data),url);
-  status("Confira os valores lidos antes de salvar.");
+  status(aviso+"Confira os valores lidos antes de salvar.");
  }catch(e){
-  status("Não consegui ler esta foto. Tente de mais perto, com internet na primeira leitura, ou digite os dados.");
+  status(aviso+"Não consegui ler esta foto. Tente de mais perto ou digite os dados.");
   openForm({},url);
  }
 }
@@ -427,7 +511,7 @@ async function loopLeitor(id){
   while(stream&&id===camId&&st.auto!==false){
    const col=recorteFrame(1100);
    if(!col){await new Promise(r=>setTimeout(r,300));continue}
-   const url=miniatura(col);realce(col);
+   const url=miniatura(col);const fb=iaOn()?b64(col):null;realce(col);
    let r;try{r=await w.recognize(col)}catch(e){break}
    if(!(stream&&id===camId))break;
    const d=lerTexto(r.data);
@@ -441,8 +525,13 @@ async function loopLeitor(id){
     guarda=chave;
     if(navigator.vibrate)navigator.vibrate(80);
     fecharCamera();
-    openForm(d,url);
-    status("Etiqueta lida automaticamente. Confira e salve.");
+    let fim=d,msg="Etiqueta lida automaticamente. Confira e salve.";
+    if(fb){
+     status("Etiqueta encontrada. Lendo com IA…");
+     try{fim=await lerIA(fb);msg="Lida com IA. Confira e salve."}
+     catch(e){msg="IA indisponível ("+e.message+"). Usei o leitor local. Confira e salve."}
+    }
+    openForm(fim,url);status(msg);
     return;
    }
   }
@@ -590,7 +679,7 @@ function renderCart(){
 $("#exp").onclick=()=>{
  const a=document.createElement("a");
  a.href=URL.createObjectURL(new Blob([JSON.stringify(st.visitas)],{type:"application/json"}));
- a.download="binozi-market-historico.json";a.click();
+ a.download="bino-reader-historico.json";a.click();
 };
 $("#imp").onchange=async e=>{
  try{
@@ -602,6 +691,66 @@ $("#imp").onchange=async e=>{
  }catch(err){}
  e.target.value="";
 };
+
+/* opções, perfil e IA */
+const abrirMenu=()=>{pintaPerfil();pintaIA();$("#menu").hidden=false;document.body.style.overflow="hidden"};
+const fecharMenu=()=>{$("#menu").hidden=true;document.body.style.overflow=""};
+$("#dots").onclick=abrirMenu;$("#avt").onclick=abrirMenu;
+$("#mclose").onclick=fecharMenu;$("#scrim").onclick=fecharMenu;
+document.addEventListener("keydown",e=>{if(e.key==="Escape")fecharMenu()});
+$("#mhist").onclick=()=>{fecharMenu();aba=2;render()};
+$("#hback").onclick=()=>{aba=1;render()};
+$("#dk").onchange=e=>{st.theme=e.target.checked?"dark":"light";persist();applyTheme()};
+
+const primeiro=()=>(st.perfil.nome||"").trim().split(/\s+/)[0];
+function pintaPerfil(){
+ const n=primeiro();
+ document.querySelectorAll(".avatar").forEach(a=>{
+  a.style.backgroundImage=st.perfil.foto?"url("+st.perfil.foto+")":"";
+  a.textContent=st.perfil.foto?"":(n?n[0].toUpperCase():"👤");
+ });
+ $("#ask").textContent=n?"Em qual mercado compraremos hoje, "+n+"?":"Em qual mercado compraremos hoje?";
+ $("#nomecard").hidden=!!(n||st.perfil.pulou);
+ if(document.activeElement!==$("#pnome"))$("#pnome").value=st.perfil.nome;
+}
+$("#pnome").oninput=e=>{st.perfil.nome=e.target.value;persist();pintaPerfil()};
+$("#nsave").onclick=()=>{const v=$("#nome0").value.trim();if(!v)return;st.perfil.nome=v;persist();pintaPerfil()};
+$("#nome0").onkeydown=e=>{if(e.key==="Enter")$("#nsave").click()};
+$("#nskip").onclick=()=>{st.perfil.pulou=true;persist();pintaPerfil()};
+$("#foto").onchange=async e=>{
+ const f=e.target.files[0];e.target.value="";if(!f)return;
+ try{
+  const bm=await createImageBitmap(f),m=Math.min(bm.width,bm.height);
+  const c=document.createElement("canvas");c.width=c.height=160;
+  c.getContext("2d").drawImage(bm,(bm.width-m)/2,(bm.height-m)/2,m,m,0,0,160,160);
+  st.perfil.foto=c.toDataURL("image/jpeg",.8);persist();pintaPerfil();
+ }catch(err){}
+};
+
+function pintaIA(){$("#iaon").checked=st.ia.on;$("#iakey").value=st.ia.key;$("#iamodel").value=st.ia.modelo}
+$("#iaon").onchange=e=>{st.ia.on=e.target.checked;persist();$("#iast").textContent=st.ia.on&&!st.ia.key?"Cole a chave abaixo para ativar.":""};
+$("#iakey").oninput=e=>{st.ia.key=e.target.value.trim();persist()};
+$("#iamodel").oninput=e=>{st.ia.modelo=e.target.value.trim();persist()};
+$("#iatest").onclick=async()=>{
+ const o=$("#iast");
+ if(!st.ia.key){o.textContent="Cole a chave primeiro.";return}
+ o.textContent="Testando…";
+ try{
+  await chamaIA([{text:"Responda apenas: ok"}]);
+  o.textContent="Funcionando ✓ (modelo "+modeloIA()+"). Ative a opção acima para usar.";
+ }catch(e){
+  o.textContent="Não funcionou: "+e.message+".";
+  if(/modelo não encontrado/.test(e.message)){
+   try{
+    const r=await fetch(GEM+"?pageSize=200",{headers:{"x-goog-api-key":st.ia.key}});
+    const j=await r.json();
+    const ls=(j.models||[]).filter(m=>(m.supportedGenerationMethods||[]).includes("generateContent")).map(m=>m.name.replace("models/","")).filter(n=>/flash/.test(n)&&!/image|tts|audio|live|embed/.test(n)).slice(0,6);
+    if(ls.length)o.textContent+=" Modelos disponíveis, digite um no campo Modelo: "+ls.join(", ")+".";
+   }catch(e2){}
+  }
+ }
+};
+pintaIA();
 
 render();
 if(cur())aquecer();
